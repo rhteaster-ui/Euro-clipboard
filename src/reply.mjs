@@ -13,6 +13,10 @@ import {
 function pickReplyMode(input, mem) {
   const lower = String(input || "").toLowerCase();
 
+  if (lower.includes("apa arti") || lower.includes("maksudnya apa") || lower.includes("dalam kbbi")) {
+    return "bahas";
+  }
+
   if (lower.includes("alasan") || lower.includes("kenapa") || lower.includes("mengapa")) {
     return "alasan";
   }

@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { spawnSync } from "node:child_process";
 import {
   HOME,
@@ -14,7 +15,9 @@ import {
   normalizeMode,
   removeNotif,
   NOTIF_PENDING_ID,
-  NOTIF_RESULT_ID
+  NOTIF_RESULT_ID,
+  notify,
+  shortcutAction
 } from "./core.mjs";
 
 function spawnBg(args, logFile) {
@@ -39,6 +42,83 @@ function pgrep() {
   return String(res.stdout || "").trim();
 }
 
+function commandExists(name) {
+  if (name === "node" && process.execPath) return true;
+
+  const res = spawnSync("sh", ["-lc", `command -v ${name}`], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  return res.status === 0;
+}
+
+function isExecutable(file) {
+  try {
+    fs.accessSync(file, fs.constants.X_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function doctor() {
+  const checks = [];
+  const add = (ok, label, detail = "") => checks.push({ ok, label, detail });
+
+  add(commandExists("node"), "node tersedia");
+  add(commandExists("termux-clipboard-get"), "termux-clipboard-get tersedia");
+  add(commandExists("termux-notification"), "termux-notification tersedia");
+
+  const shortcuts = [
+    "neuro-answer",
+    "neuro-reply",
+    "neuro-reason",
+    "neuro-menu",
+    "neuro-view",
+    "neuro-close",
+    "neuro-reset",
+    "neuro-on",
+    "neuro-off"
+  ];
+
+  for (const name of shortcuts) {
+    const file = `${HOME}/.shortcuts/${name}`;
+    add(fs.existsSync(file) && isExecutable(file), `shortcut executable: ${name}`, file);
+  }
+
+  add(fs.existsSync(`${HOME}/.neuroclip/src/core.mjs`), "core.mjs terinstall", `${HOME}/.neuroclip/src/core.mjs`);
+  add(
+    fs.existsSync(`${HOME}/.neuroclip/config/providers.json`) || fs.existsSync(`${HOME}/.neuroclip/providers.json`),
+    "config provider ada"
+  );
+
+  const watcher = pgrep();
+  add(true, "watcher status", watcher || "watcher mati");
+
+  for (const check of checks) {
+    console.log(`${check.ok ? "✅" : "❌"} ${check.label}${check.detail ? ` — ${check.detail}` : ""}`);
+  }
+
+  const failed = checks.filter(check => !check.ok).length;
+  console.log(failed ? `\n${failed} check gagal.` : "\nSemua check penting OK.");
+}
+
+function testNotif() {
+  notify({
+    id: NOTIF_PENDING_ID,
+    title: `${APP_NAME} • Mode test`,
+    content: "Teks disalin:\nIni notifikasi modular test. Tap body untuk membuka menu.",
+    action: shortcutAction("neuro-menu"),
+    buttons: [
+      { label: "Jawab", action: shortcutAction("neuro-answer") },
+      { label: "Balas", action: shortcutAction("neuro-reply") },
+      { label: "Tutup", action: shortcutAction("neuro-close") }
+    ]
+  });
+  toast("Notifikasi test dikirim.");
+  console.log("Notifikasi test dikirim. Tap body untuk menu; expand panel untuk tombol.");
+}
+
 function usage() {
   console.log(`${APP_NAME} CLI
 
@@ -46,6 +126,8 @@ Pakai:
   neuro on                 aktifkan clipboard watcher
   neuro off                matikan clipboard watcher
   neuro status             cek status
+  neuro doctor             cek instalasi Termux/shortcut
+  neuro test-notif         kirim notifikasi modular test
   neuro log                lihat log watcher
   neuro reset              hapus konteks memory
   neuro reset full         hapus semua memory termasuk mode
@@ -106,6 +188,14 @@ async function main() {
       console.log(out ? `NeuroClip ON\n${out}` : "NeuroClip OFF");
       break;
     }
+
+    case "doctor":
+      doctor();
+      break;
+
+    case "test-notif":
+      testNotif();
+      break;
 
     case "log":
       spawnSync("tail", ["-f", `${HOME}/neuroclip-watch.log`], {

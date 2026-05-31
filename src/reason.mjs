@@ -1,9 +1,7 @@
 import {
   loadMemory,
+  saveMemory,
   setClipboard,
-  notify,
-  NOTIF_RESULT_ID,
-  HOME,
   toast,
   askRouter,
   showResultNotification
@@ -16,15 +14,11 @@ async function main() {
     if (mem.last_reason) {
       setClipboard(mem.last_reason);
 
-      notify({
-        id: NOTIF_RESULT_ID,
-        title: "AI Alasan",
-        content: mem.last_reason,
-        action: `${HOME}/.shortcuts/neuro-menu`,
-        buttons: [
-          { label: "Balas", action: `${HOME}/.shortcuts/neuro-reply` },
-          { label: "Tutup", action: `${HOME}/.shortcuts/neuro-close` }
-        ]
+      showResultNotification({
+        mode: mem.last_mode || "alasan",
+        provider: mem.last_provider || "memory",
+        answer: mem.last_reason,
+        display: mem.last_reason
       });
 
       toast("Alasan masuk clipboard.");
@@ -50,6 +44,12 @@ ${answer}
 Tugas:
 Jelaskan alasan kenapa jawaban tersebut benar. Jika ini pilihan ganda, jelaskan singkat kenapa opsi lain tidak tepat.`
     });
+
+    const latest = loadMemory();
+    latest.last_reason = result.answer;
+    latest.last_mode = "alasan";
+    latest.last_provider = result.provider;
+    saveMemory(latest);
 
     setClipboard(result.answer);
     showResultNotification({

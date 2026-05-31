@@ -50,7 +50,9 @@ async function followUp(instruction) {
   const lower = instruction.toLowerCase();
   let mode = mem.active_mode || "default";
 
-  if (lower.includes("alasan") || lower.includes("kenapa") || lower.includes("mengapa")) {
+  if (lower.includes("apa arti") || lower.includes("maksudnya apa") || lower.includes("dalam kbbi")) {
+    mode = "bahas";
+  } else if (lower.includes("alasan") || lower.includes("kenapa") || lower.includes("mengapa")) {
     mode = "alasan";
   } else if (lower.includes("bahas") || lower.includes("pembahasan") || lower.includes("jelaskan")) {
     mode = "bahas";
@@ -77,7 +79,10 @@ Instruksi user:
 ${instruction}
 
 Tugas:
-Jawab instruksi user berdasarkan teks awal. Jangan mengambil konteks lama yang tidak relevan.`
+Jawab instruksi user berdasarkan teks/pertanyaan awal.
+Jangan mengambil konteks lama yang tidak relevan.
+Jika instruksi user berupa "apa arti", "maksudnya apa", "dalam KBBI", jelaskan arti dari teks awal yang disalin.
+Jangan hanya mengulang jawaban sebelumnya kecuali memang diminta jawaban singkat saja.`
   });
 
   setClipboard(result.answer);
