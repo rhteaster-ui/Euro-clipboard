@@ -1,0 +1,133 @@
+{
+  "base_notes": "Provider publik. Ganti URL jika endpoint berubah.",
+  "providers": {
+    "chatgpt": {
+      "url": "https://api.pixxxry.eu.cc/ai/chatgpt",
+      "method": "GET",
+      "message_param": "message",
+      "params": {
+        "model": "default"
+      },
+      "extract": "result.result",
+      "role": "Default, form, pilihan ganda, fakta umum"
+    },
+    "copilot": {
+      "url": "https://api.pixxxry.eu.cc/ai/copilot",
+      "method": "GET",
+      "message_param": "message",
+      "params": {
+        "model": "default"
+      },
+      "extract": "result.text",
+      "role": "Rewrite, ringkas, WhatsApp, parafrase"
+    },
+    "deepseek": {
+      "url": "https://api.pixxxry.eu.cc/ai/deepseek",
+      "method": "GET",
+      "message_param": "message",
+      "params": {
+        "model": "deepseek-chat",
+        "provider": "deepseek"
+      },
+      "system_param": "system",
+      "extract": "result.result",
+      "role": "Coding, matematika, logika, reasoning teknis"
+    },
+    "claude": {
+      "url": "https://api.pixxxry.eu.cc/ai/claude",
+      "method": "GET",
+      "message_param": "message",
+      "params": {
+        "session": "default"
+      },
+      "extract": "result.answer",
+      "role": "Bahasa natural, SD/SMP/SMA, formal, lengkap"
+    }
+  },
+  "routes": {
+    "default": [
+      "chatgpt",
+      "deepseek",
+      "claude"
+    ],
+    "form": [
+      "chatgpt",
+      "deepseek",
+      "claude"
+    ],
+    "pilihanganda": [
+      "chatgpt",
+      "deepseek",
+      "claude"
+    ],
+    "opsi": [
+      "chatgpt",
+      "deepseek",
+      "claude"
+    ],
+    "singkat": [
+      "chatgpt",
+      "claude"
+    ],
+    "sedang": [
+      "chatgpt",
+      "claude"
+    ],
+    "lengkap": [
+      "chatgpt",
+      "deepseek",
+      "claude"
+    ],
+    "bahas": [
+      "deepseek",
+      "chatgpt",
+      "claude"
+    ],
+    "alasan": [
+      "chatgpt",
+      "deepseek",
+      "claude"
+    ],
+    "sd": [
+      "claude",
+      "chatgpt"
+    ],
+    "smp": [
+      "claude",
+      "chatgpt"
+    ],
+    "sma": [
+      "claude",
+      "chatgpt"
+    ],
+    "formal": [
+      "claude",
+      "chatgpt"
+    ],
+    "code": [
+      "deepseek",
+      "chatgpt",
+      "copilot"
+    ],
+    "math": [
+      "deepseek",
+      "chatgpt",
+      "claude"
+    ],
+    "wa": [
+      "copilot",
+      "claude",
+      "chatgpt"
+    ],
+    "ringkas": [
+      "copilot",
+      "claude",
+      "chatgpt"
+    ],
+    "rewrite": [
+      "copilot",
+      "claude",
+      "chatgpt"
+    ]
+  }
+}

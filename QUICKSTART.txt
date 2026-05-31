@@ -1,0 +1,30 @@
+NEUROCLIP QUICKSTART
+
+1. Install:
+   pkg update -y
+   pkg install nodejs termux-api git -y
+   termux-setup-storage
+
+2. Clone:
+   git clone <repo>
+   cd Agen-clipboard
+
+3. Setup:
+   bash scripts/setup-termux.sh
+
+4. Start:
+   neuro on
+
+5. Use:
+   Salin teks -> tap notif -> pilih Jawab/Balas/Tutup.
+
+6. Stop:
+   neuro off
+
+7. Reset context:
+   neuro reset
+
+8. Set mode:
+   neuro mode form
+   neuro mode sd
+   neuro mode code
