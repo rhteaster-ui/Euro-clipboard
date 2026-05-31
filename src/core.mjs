@@ -133,6 +133,10 @@ export function wakeUnlock() {
   termux("termux-wake-unlock");
 }
 
+export function shortcutAction(name) {
+  return `bash "${HOME}/.shortcuts/${name}"`;
+}
+
 export function notify({ id, title, content, action = "", buttons = [] }) {
   const args = [
     "--id", String(id),
@@ -571,6 +575,29 @@ export async function askRouter({ mode, question, extraInstruction = "" }) {
   throw new Error(`Semua provider gagal. Last: ${lastError}`);
 }
 
+export function buildLastAnswerText(mem = loadMemory()) {
+  return [
+    "【 NeuroClip - Jawaban Full 】",
+    "",
+    "Mode     : " + (mem.last_mode || "-"),
+    "Provider : " + (mem.last_provider || "-"),
+    "",
+    "Pertanyaan:",
+    mem.last_question || mem.pending_text || "-",
+    "",
+    "Jawaban:",
+    mem.last_display || mem.last_answer || "-",
+    "",
+    "Alasan:",
+    mem.last_reason || "-"
+  ].join("\n");
+}
+
+export function writeLastAnswerFile(mem = loadMemory()) {
+  ensureDir();
+  fs.writeFileSync(LAST_ANSWER_FILE, buildLastAnswerText(mem));
+}
+
 export function showPendingNotification(text) {
   const mem = loadMemory();
 
@@ -578,25 +605,29 @@ export function showPendingNotification(text) {
     id: NOTIF_PENDING_ID,
     title: `${APP_NAME} • Mode ${mem.active_mode}`,
     content: `Teks disalin:\n${String(text).slice(0, 220)}`,
-    action: `${HOME}/.shortcuts/neuro-menu`,
+    action: shortcutAction("neuro-menu"),
     buttons: [
-      { label: "Jawab", action: `${HOME}/.shortcuts/neuro-answer` },
-      { label: "Balas", action: `${HOME}/.shortcuts/neuro-reply` },
-      { label: "Tutup", action: `${HOME}/.shortcuts/neuro-close` }
+      { label: "Jawab", action: shortcutAction("neuro-answer") },
+      { label: "Balas", action: shortcutAction("neuro-reply") },
+      { label: "Tutup", action: shortcutAction("neuro-close") }
     ]
   });
 }
 
 export function showResultNotification(result) {
+  try {
+    writeLastAnswerFile();
+  } catch {}
+
   notify({
     id: NOTIF_RESULT_ID,
     title: `AI Jawaban • ${result.mode}/${result.provider}`,
-    content: result.display || result.answer,
-    action: `${HOME}/.shortcuts/neuro-menu`,
+    content: String(result.display || result.answer).slice(0, 220),
+    action: shortcutAction("neuro-menu"),
     buttons: [
-      { label: "Lihat", action: `${HOME}/.shortcuts/neuro-view` },
-      { label: "Balas", action: `${HOME}/.shortcuts/neuro-reply` },
-      { label: "Tutup", action: `${HOME}/.shortcuts/neuro-close` }
+      { label: "Lihat", action: shortcutAction("neuro-view") },
+      { label: "Balas", action: shortcutAction("neuro-reply") },
+      { label: "Tutup", action: shortcutAction("neuro-close") }
     ]
   });
 }

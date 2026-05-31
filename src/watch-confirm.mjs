@@ -5,6 +5,7 @@ import {
   shouldIgnoreClipboard,
   showPendingNotification,
   notify,
+  shortcutAction,
   NOTIF_PENDING_ID,
   APP_NAME
 } from "./core.mjs";
@@ -20,7 +21,10 @@ async function main() {
     id: NOTIF_PENDING_ID,
     title: `${APP_NAME} Watcher`,
     content: "Aktif. Salin teks lalu tap notif untuk menu.",
-    buttons: []
+    action: shortcutAction("neuro-menu"),
+    buttons: [
+      { label: "Tutup", action: shortcutAction("neuro-close") }
+    ]
   });
 
   console.log(`${APP_NAME} watcher aktif. Salin teks untuk memunculkan menu.`);

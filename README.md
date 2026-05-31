@@ -307,12 +307,28 @@ neuro off
 
 ---
 
+## ✦ Catatan Notifikasi Android/Oppo
+
+Android/Oppo sering membatasi heads-up notification sehingga preview terlihat hanya 1 baris dan tombol aksi belum terlihat. Ini normal dari sistem Android, bukan berarti NeuroClip gagal membuat notifikasi modular.
+
+- Tombol `Jawab`, `Balas`, dan `Tutup` biasanya muncul setelah panel notifikasi ditarik atau notifikasi di-expand.
+- Untuk UX cepat, cukup tap body notifikasi NeuroClip untuk membuka menu modular.
+- Notifikasi hanya menampilkan preview pendek agar stabil di Android/Oppo.
+- Jawaban panjang tidak dipaksa tampil full di notifikasi.
+- Jawaban lengkap selalu masuk clipboard.
+- Jawaban lengkap juga bisa dibuka lewat tombol `Lihat`, yang membuka file `/sdcard/termux/neuroclip-last-answer.txt`.
+- Untuk debug notifikasi modular, jalankan `neuro test-notif`.
+
+---
+
 ## ✦ Command Utama
 
 ```bash
 neuro on
 neuro off
 neuro status
+neuro doctor
+neuro test-notif
 neuro log
 neuro reset
 neuro reset full
@@ -330,6 +346,8 @@ Keterangan:
 | `neuro on` | aktifkan clipboard watcher |
 | `neuro off` | matikan watcher dan bersihkan notifikasi |
 | `neuro status` | cek status tools |
+| `neuro doctor` | cek command Termux, shortcut, config, dan watcher |
+| `neuro test-notif` | kirim notifikasi modular test untuk debug Android/Oppo |
 | `neuro log` | lihat log watcher |
 | `neuro reset` | hapus konteks lama |
 | `neuro reset full` | hapus semua memory termasuk mode |
@@ -371,6 +389,13 @@ Cek status:
 
 ```bash
 neuro status
+```
+
+Cek instalasi dan notifikasi modular:
+
+```bash
+neuro doctor
+neuro test-notif
 ```
 
 Lihat log:
@@ -748,6 +773,13 @@ Cek status:
 neuro status
 ```
 
+Cek instalasi dan notifikasi modular:
+
+```bash
+neuro doctor
+neuro test-notif
+```
+
 Lihat log:
 
 ```bash
@@ -830,6 +862,13 @@ Cek status:
 
 ```bash
 neuro status
+```
+
+Cek instalasi dan notifikasi modular:
+
+```bash
+neuro doctor
+neuro test-notif
 ```
 
 Lihat log:
@@ -1006,6 +1045,8 @@ Command utama tetap:
 neuro on
 neuro off
 neuro status
+neuro doctor
+neuro test-notif
 neuro log
 neuro mode
 neuro run "teks"

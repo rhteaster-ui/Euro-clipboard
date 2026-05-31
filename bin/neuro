@@ -1,2 +1,2 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 node "$HOME/.neuroclip/src/cli.mjs" "$@"

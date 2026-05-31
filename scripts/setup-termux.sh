@@ -1,8 +1,9 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 set -e
 
 APP_NAME="NeuroClip"
 APP_DIR="$HOME/.neuroclip"
+PREFIX="${PREFIX:-$HOME/.local}"
 SRC_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 echo "[1] Membuat folder install..."
@@ -16,7 +17,7 @@ cp -f "$SRC_DIR/config/providers.json" "$APP_DIR/config/providers.json"
 echo "[3] Membuat command neuro..."
 mkdir -p "$PREFIX/bin"
 cat > "$PREFIX/bin/neuro" <<'EOF'
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 node "$HOME/.neuroclip/src/cli.mjs" "$@"
 EOF
 chmod +x "$PREFIX/bin/neuro"
@@ -80,6 +81,8 @@ node --check "$APP_DIR/src/view.mjs"
 node --check "$APP_DIR/src/reset.mjs"
 node --check "$APP_DIR/src/mode.mjs"
 node --check "$APP_DIR/src/cli.mjs"
+node --check "$APP_DIR/src/server.mjs"
+node --check "$APP_DIR/src/watch.mjs"
 
 echo ""
 echo "✅ $APP_NAME terpasang."
@@ -88,6 +91,8 @@ echo "Command:"
 echo "  neuro on"
 echo "  neuro off"
 echo "  neuro status"
+echo "  neuro doctor"
+echo "  neuro test-notif"
 echo "  neuro mode form"
 echo "  neuro run \"siapa presiden ke 2 indonesia\""
 echo ""
